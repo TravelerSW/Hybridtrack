@@ -38,7 +38,7 @@ export function HamburgerMenu({ currentView, onNavigate }: HamburgerMenuProps) {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 backdrop-blur-md bg-white/30 z-40"
           onClick={() => setIsOpen(false)}
         />
       )}
