@@ -1,4 +1,4 @@
-import { Dumbbell, Timer, Repeat } from "lucide-react";
+import { Dumbbell, Timer, Repeat } from "lucide-react"; // eslint-disable-line import/no-unresolved
 
 export interface Exercise {
   name: string;
