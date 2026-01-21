@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
-import { Dumbbell, CircleDot, Bike, Plus } from "lucide-react";
-import { WorkoutCard, Workout } from "@/app/components/WorkoutCard";
+import { Dumbbell, CircleDot, Bike } from "lucide-react";
+import { WorkoutCard, type Workout } from "@/app/components/WorkoutCard";
 import { strengthWorkouts, runningWorkouts, cyclingWorkouts } from "@/app/data/workouts";
 import { CompletedWorkout } from "@/app/components/CompletedWorkoutsPanel";
-import { WorkoutCompletionModal } from "@/app/components/WorkoutCompletionModal";
 import { WorkoutSessionTracker } from "@/app/components/WorkoutSessionTracker";
 import { HamburgerMenu } from "@/app/components/HamburgerMenu";
 import { HistoryView } from "@/app/components/HistoryView";
+import { WorkoutCompletionModal } from "@/app/components/WorkoutCompletionModal";
 import { SettingsView } from "@/app/components/SettingsView";
-import { CreateWorkoutModal } from "@/app/components/CreateWorkoutModal";
 
 interface ExerciseLog {
   name: string;
@@ -34,19 +33,8 @@ export default function App() {
   } | null>(null);
   const [workoutLogs, setWorkoutLogs] = useState<ExerciseLog[] | null>(null);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
-  const [isWorkoutMinimized, setIsWorkoutMinimized] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
   const [language, setLanguage] = useState<string>("en");
-  const [showCreateWorkout, setShowCreateWorkout] = useState(false);
-  const [customWorkouts, setCustomWorkouts] = useState<{
-    strength: Workout[];
-    running: Workout[];
-    cycling: Workout[];
-  }>({
-    strength: [],
-    running: [],
-    cycling: [],
-  });
 
   // Load data from localStorage on mount
   useEffect(() => {
@@ -64,29 +52,23 @@ export default function App() {
     if (savedLanguage) {
       setLanguage(savedLanguage);
     }
-
-    const savedCustomWorkouts = localStorage.getItem("customWorkouts");
-    if (savedCustomWorkouts) {
-      setCustomWorkouts(JSON.parse(savedCustomWorkouts));
-    }
   }, []);
 
-  // Save data to localStorage
+  // Save data to localStorage and update DOM for dark mode
   useEffect(() => {
     localStorage.setItem("completedWorkouts", JSON.stringify(completedWorkouts));
   }, [completedWorkouts]);
 
   useEffect(() => {
     localStorage.setItem("theme", theme);
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(theme);
   }, [theme]);
 
   useEffect(() => {
     localStorage.setItem("language", language);
   }, [language]);
-
-  useEffect(() => {
-    localStorage.setItem("customWorkouts", JSON.stringify(customWorkouts));
-  }, [customWorkouts]);
 
   const handleStartWorkout = (workout: Workout) => {
     setSelectedWorkout({ workout, type: activeTab });
@@ -126,15 +108,6 @@ export default function App() {
     setSelectedWorkout(null);
     setWorkoutLogs(null);
     setShowCompletionModal(false);
-    setIsWorkoutMinimized(false);
-  };
-
-  const handleMinimizeWorkout = () => {
-    setIsWorkoutMinimized(true);
-  };
-
-  const handleRestoreWorkout = () => {
-    setIsWorkoutMinimized(false);
   };
 
   const handleDeleteWorkout = (index: number) => {
@@ -142,21 +115,9 @@ export default function App() {
     setCompletedWorkouts(newWorkouts);
   };
 
-  const handleAddCustomWorkout = (workout: Workout, type: "strength" | "running" | "cycling") => {
-    setCustomWorkouts((prev) => ({
-      ...prev,
-      [type]: [...prev[type], workout],
-    }));
-    setShowCreateWorkout(false);
-  };
-
   return (
-    <div className={`min-h-screen transition-colors duration-200 ${
-      theme === "dark"
-        ? "bg-gradient-to-br from-gray-900 to-gray-800"
-        : "bg-gradient-to-br from-blue-50 to-indigo-100"
-    }`}>
-      <HamburgerMenu currentView={currentView} onNavigate={setCurrentView} theme={theme} />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-900 transition-colors duration-300">
+      <HamburgerMenu currentView={currentView} onNavigate={setCurrentView} />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Training View */}
@@ -164,29 +125,23 @@ export default function App() {
           <>
             {/* Header */}
             <header className="text-center mb-8">
-              <h1 className={`text-4xl font-bold mb-2 ${
-                theme === "dark" ? "text-white" : "text-gray-900"
-              }`}>
-                Workout Hub
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                Fitness Workout Hub
               </h1>
-              <p className={theme === "dark" ? "text-gray-300" : "text-gray-600"}>
+              <p className="text-gray-600 dark:text-gray-300">
                 Choose your workout type and start training
               </p>
             </header>
 
             {/* Tabs */}
             <div className="flex justify-center mb-8">
-              <div className={`inline-flex rounded-lg shadow-md p-1 ${
-                theme === "dark" ? "bg-gray-800" : "bg-white"
-              }`}>
+              <div className="inline-flex bg-white dark:bg-gray-800 rounded-lg shadow-md p-1 transition-colors">
                 <button
                   onClick={() => setActiveTab("strength")}
                   className={`flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all ${
                     activeTab === "strength"
-                      ? "bg-blue-600 text-white"
-                      : theme === "dark"
-                      ? "text-gray-300 hover:bg-gray-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                      ? "bg-blue-600 text-white" // eslint-disable-next-line react/jsx-no-undef
+                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}
                 >
                   <Dumbbell className="w-5 h-5" />
@@ -197,9 +152,7 @@ export default function App() {
                   className={`flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all ${
                     activeTab === "running"
                       ? "bg-blue-600 text-white"
-                      : theme === "dark"
-                      ? "text-gray-300 hover:bg-gray-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}
                 >
                   <CircleDot className="w-5 h-5" />
@@ -210,9 +163,7 @@ export default function App() {
                   className={`flex items-center gap-2 px-6 py-3 rounded-md font-medium transition-all ${
                     activeTab === "cycling"
                       ? "bg-blue-600 text-white"
-                      : theme === "dark"
-                      ? "text-gray-300 hover:bg-gray-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}
                 >
                   <Bike className="w-5 h-5" />
@@ -224,30 +175,27 @@ export default function App() {
             {/* Workout Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {activeTab === "strength" &&
-                [...strengthWorkouts, ...customWorkouts.strength].map((workout) => (
+                strengthWorkouts.map((workout) => (
                   <WorkoutCard
                     key={workout.id}
                     workout={workout}
                     onComplete={handleStartWorkout}
-                    theme={theme}
                   />
                 ))}
               {activeTab === "running" &&
-                [...runningWorkouts, ...customWorkouts.running].map((workout) => (
+                runningWorkouts.map((workout) => (
                   <WorkoutCard
                     key={workout.id}
                     workout={workout}
                     onComplete={handleStartWorkout}
-                    theme={theme}
                   />
                 ))}
               {activeTab === "cycling" &&
-                [...cyclingWorkouts, ...customWorkouts.cycling].map((workout) => (
+                cyclingWorkouts.map((workout) => (
                   <WorkoutCard
                     key={workout.id}
                     workout={workout}
                     onComplete={handleStartWorkout}
-                    theme={theme}
                   />
                 ))}
             </div>
@@ -259,7 +207,6 @@ export default function App() {
           <HistoryView 
             completedWorkouts={completedWorkouts}
             onDeleteWorkout={handleDeleteWorkout}
-            theme={theme}
           />
         )}
 
@@ -279,10 +226,6 @@ export default function App() {
             workout={selectedWorkout.workout}
             onComplete={handleCompleteSession}
             onCancel={handleCancelWorkout}
-            onMinimize={handleMinimizeWorkout}
-            onRestore={handleRestoreWorkout}
-            isMinimized={isWorkoutMinimized}
-            theme={theme}
           />
         )}
 
@@ -293,28 +236,7 @@ export default function App() {
             workoutType={selectedWorkout.type}
             onSave={handleSaveWorkout}
             onCancel={handleCancelWorkout}
-            theme={theme}
           />
-        )}
-
-        {/* Create Workout Modal */}
-        {showCreateWorkout && (
-          <CreateWorkoutModal
-            onSave={handleAddCustomWorkout}
-            onCancel={() => setShowCreateWorkout(false)}
-            theme={theme}
-          />
-        )}
-
-        {/* Floating Add Button - Only show in Training view */}
-        {currentView === "training" && !selectedWorkout && !showCreateWorkout && (
-          <button
-            onClick={() => setShowCreateWorkout(true)}
-            className="fixed bottom-8 right-8 w-16 h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-110 z-40"
-            title="Create custom workout"
-          >
-            <Plus className="w-8 h-8" />
-          </button>
         )}
       </div>
     </div>
