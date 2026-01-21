@@ -10,6 +10,7 @@ interface WorkoutCompletionModalProps {
     duration: string;
   }) => void;
   onCancel: () => void;
+  theme?: "light" | "dark";
 }
 
 export function WorkoutCompletionModal({
@@ -17,6 +18,7 @@ export function WorkoutCompletionModal({
   workoutType,
   onSave,
   onCancel,
+  theme = "light",
 }: WorkoutCompletionModalProps) {
   const [notes, setNotes] = useState("");
   const [rating, setRating] = useState(0);
@@ -58,37 +60,85 @@ export function WorkoutCompletionModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-        <div className="p-6 border-b border-gray-200">
+      <div
+        className={`rounded-lg shadow-xl max-w-md w-full ${
+          theme === "dark" ? "bg-gray-800" : "bg-white"
+        }`}
+      >
+        <div
+          className={`p-6 border-b ${
+            theme === "dark" ? "border-gray-700" : "border-gray-200"
+          }`}
+        >
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-gray-900">
+            <h2
+              className={`text-xl font-bold ${
+                theme === "dark" ? "text-white" : "text-gray-900"
+              }`}
+            >
               Workout Completed! 🎉
             </h2>
             <button
               onClick={onCancel}
-              className="text-gray-400 hover:text-gray-600"
+              className={
+                theme === "dark"
+                  ? "text-gray-400 hover:text-gray-200"
+                  : "text-gray-400 hover:text-gray-600"
+              }
             >
               <X className="w-5 h-5" />
             </button>
           </div>
-          <p className="text-gray-600 mt-1 text-sm">{workoutTitle}</p>
+          <p
+            className={`mt-1 text-sm ${
+              theme === "dark" ? "text-gray-300" : "text-gray-600"
+            }`}
+          >
+            {workoutTitle}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {/* Rest Suggestion */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div
+            className={`border rounded-lg p-4 ${
+              theme === "dark"
+                ? "bg-blue-900/30 border-blue-800"
+                : "bg-blue-50 border-blue-200"
+            }`}
+          >
             <div className="flex items-start gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Clock className="w-5 h-5 text-blue-600" />
+              <div
+                className={`p-2 rounded-lg ${
+                  theme === "dark" ? "bg-blue-800/50" : "bg-blue-100"
+                }`}
+              >
+                <Clock
+                  className={`w-5 h-5 ${
+                    theme === "dark" ? "text-blue-400" : "text-blue-600"
+                  }`}
+                />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-blue-900 mb-1">
+                <h3
+                  className={`font-semibold mb-1 ${
+                    theme === "dark" ? "text-blue-200" : "text-blue-900"
+                  }`}
+                >
                   Recovery Recommendation
                 </h3>
-                <p className="text-sm text-blue-800 mb-2">
+                <p
+                  className={`text-sm mb-2 ${
+                    theme === "dark" ? "text-blue-300" : "text-blue-800"
+                  }`}
+                >
                   {restSuggestion.message}
                 </p>
-                <div className="flex items-center gap-2 text-sm text-blue-700">
+                <div
+                  className={`flex items-center gap-2 text-sm ${
+                    theme === "dark" ? "text-blue-300" : "text-blue-700"
+                  }`}
+                >
                   <Calendar className="w-4 h-4" />
                   <span>
                     Next workout: {nextWorkoutDate.toLocaleDateString("en-US", {
@@ -98,7 +148,11 @@ export function WorkoutCompletionModal({
                     })}
                   </span>
                 </div>
-                <p className="text-xs text-blue-600 mt-2 italic">
+                <p
+                  className={`text-xs mt-2 italic ${
+                    theme === "dark" ? "text-blue-400" : "text-blue-600"
+                  }`}
+                >
                   💡 {restSuggestion.tip}
                 </p>
               </div>
@@ -107,7 +161,11 @@ export function WorkoutCompletionModal({
 
           {/* Rating */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label
+              className={`block text-sm font-medium mb-2 ${
+                theme === "dark" ? "text-gray-200" : "text-gray-700"
+              }`}
+            >
               How was your workout?
             </label>
             <div className="flex gap-1">
@@ -124,6 +182,8 @@ export function WorkoutCompletionModal({
                     className={`w-8 h-8 transition-colors ${
                       star <= (hoveredRating || rating)
                         ? "fill-yellow-400 text-yellow-400"
+                        : theme === "dark"
+                        ? "text-gray-600"
                         : "text-gray-300"
                     }`}
                   />
@@ -136,7 +196,9 @@ export function WorkoutCompletionModal({
           <div>
             <label
               htmlFor="duration"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className={`block text-sm font-medium mb-2 ${
+                theme === "dark" ? "text-gray-200" : "text-gray-700"
+              }`}
             >
               Actual Duration (optional)
             </label>
@@ -146,7 +208,11 @@ export function WorkoutCompletionModal({
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
               placeholder="e.g., 45 min"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                theme === "dark"
+                  ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                  : "bg-white border-gray-300 text-gray-900"
+              }`}
             />
           </div>
 
@@ -154,7 +220,9 @@ export function WorkoutCompletionModal({
           <div>
             <label
               htmlFor="notes"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className={`block text-sm font-medium mb-2 ${
+                theme === "dark" ? "text-gray-200" : "text-gray-700"
+              }`}
             >
               Notes (optional)
             </label>
@@ -164,7 +232,11 @@ export function WorkoutCompletionModal({
               onChange={(e) => setNotes(e.target.value)}
               rows={4}
               placeholder="How did you feel? Any PRs? What could improve?"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+              className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none ${
+                theme === "dark"
+                  ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                  : "bg-white border-gray-300 text-gray-900"
+              }`}
             />
           </div>
 
@@ -173,7 +245,11 @@ export function WorkoutCompletionModal({
             <button
               type="button"
               onClick={onCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
+              className={`flex-1 px-4 py-2 border rounded-lg font-medium transition-colors ${
+                theme === "dark"
+                  ? "border-gray-600 text-gray-200 hover:bg-gray-700"
+                  : "border-gray-300 text-gray-700 hover:bg-gray-50"
+              }`}
             >
               Skip
             </button>

@@ -7,9 +7,10 @@ import "react-day-picker/dist/style.css";
 interface HistoryViewProps {
   completedWorkouts: CompletedWorkout[];
   onDeleteWorkout: (index: number) => void;
+  theme?: "light" | "dark";
 }
 
-export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewProps) {
+export function HistoryView({ completedWorkouts, onDeleteWorkout, theme = "light" }: HistoryViewProps) {
   const [viewMode, setViewMode] = useState<"list" | "calendar">("list");
   const [filter, setFilter] = useState<"all" | "strength" | "running" | "cycling">("all");
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
@@ -46,36 +47,72 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
 
   return (
     <div className="max-w-6xl mx-auto">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">Workout History</h1>
+      <h1 className={`text-3xl font-bold mb-6 ${
+        theme === "dark" ? "text-white" : "text-gray-900"
+      }`}>Workout History</h1>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-blue-50 rounded-lg p-4 text-center">
-          <Trophy className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-blue-600">
+        <div className={`rounded-lg p-4 text-center ${
+          theme === "dark" ? "bg-blue-900/40" : "bg-blue-50"
+        }`}>
+          <Trophy className={`w-8 h-8 mx-auto mb-2 ${
+            theme === "dark" ? "text-blue-400" : "text-blue-600"
+          }`} />
+          <p className={`text-2xl font-bold ${
+            theme === "dark" ? "text-blue-400" : "text-blue-600"
+          }`}>
             {completedWorkouts.length}
           </p>
-          <p className="text-sm text-gray-600">Total Workouts</p>
+          <p className={`text-sm ${
+            theme === "dark" ? "text-gray-300" : "text-gray-600"
+          }`}>Total Workouts</p>
         </div>
-        <div className="bg-purple-50 rounded-lg p-4 text-center">
-          <Dumbbell className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-purple-600">{strengthCount}</p>
-          <p className="text-sm text-gray-600">Strength</p>
+        <div className={`rounded-lg p-4 text-center ${
+          theme === "dark" ? "bg-purple-900/40" : "bg-purple-50"
+        }`}>
+          <Dumbbell className={`w-8 h-8 mx-auto mb-2 ${
+            theme === "dark" ? "text-purple-400" : "text-purple-600"
+          }`} />
+          <p className={`text-2xl font-bold ${
+            theme === "dark" ? "text-purple-400" : "text-purple-600"
+          }`}>{strengthCount}</p>
+          <p className={`text-sm ${
+            theme === "dark" ? "text-gray-300" : "text-gray-600"
+          }`}>Strength</p>
         </div>
-        <div className="bg-orange-50 rounded-lg p-4 text-center">
-          <CircleDot className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-orange-600">{runningCount}</p>
-          <p className="text-sm text-gray-600">Running</p>
+        <div className={`rounded-lg p-4 text-center ${
+          theme === "dark" ? "bg-orange-900/40" : "bg-orange-50"
+        }`}>
+          <CircleDot className={`w-8 h-8 mx-auto mb-2 ${
+            theme === "dark" ? "text-orange-400" : "text-orange-600"
+          }`} />
+          <p className={`text-2xl font-bold ${
+            theme === "dark" ? "text-orange-400" : "text-orange-600"
+          }`}>{runningCount}</p>
+          <p className={`text-sm ${
+            theme === "dark" ? "text-gray-300" : "text-gray-600"
+          }`}>Running</p>
         </div>
-        <div className="bg-green-50 rounded-lg p-4 text-center">
-          <Bike className="w-8 h-8 text-green-600 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-green-600">{cyclingCount}</p>
-          <p className="text-sm text-gray-600">Cycling</p>
+        <div className={`rounded-lg p-4 text-center ${
+          theme === "dark" ? "bg-green-900/40" : "bg-green-50"
+        }`}>
+          <Bike className={`w-8 h-8 mx-auto mb-2 ${
+            theme === "dark" ? "text-green-400" : "text-green-600"
+          }`} />
+          <p className={`text-2xl font-bold ${
+            theme === "dark" ? "text-green-400" : "text-green-600"
+          }`}>{cyclingCount}</p>
+          <p className={`text-sm ${
+            theme === "dark" ? "text-gray-300" : "text-gray-600"
+          }`}>Cycling</p>
         </div>
       </div>
 
       {/* View Mode Toggle & Filters */}
-      <div className="bg-white rounded-lg shadow-md p-4 mb-6">
+      <div className={`rounded-lg shadow-md p-4 mb-6 ${
+        theme === "dark" ? "bg-gray-800" : "bg-white"
+      }`}>
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex gap-2">
             <button
@@ -83,6 +120,8 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                 viewMode === "list"
                   ? "bg-blue-600 text-white"
+                  : theme === "dark"
+                  ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -94,6 +133,8 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                 viewMode === "calendar"
                   ? "bg-blue-600 text-white"
+                  : theme === "dark"
+                  ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -104,12 +145,16 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
 
           {/* Filter Buttons */}
           <div className="flex items-center gap-2 flex-wrap">
-            <Filter className="w-4 h-4 text-gray-500" />
+            <Filter className={`w-4 h-4 ${
+              theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`} />
             <button
               onClick={() => setFilter("all")}
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 filter === "all"
                   ? "bg-blue-600 text-white"
+                  : theme === "dark"
+                  ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -120,6 +165,8 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 filter === "strength"
                   ? "bg-purple-600 text-white"
+                  : theme === "dark"
+                  ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -130,6 +177,8 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 filter === "running"
                   ? "bg-orange-600 text-white"
+                  : theme === "dark"
+                  ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -140,6 +189,8 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
               className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
                 filter === "cycling"
                   ? "bg-green-600 text-white"
+                  : theme === "dark"
+                  ? "bg-gray-700 text-gray-300 hover:bg-gray-600"
                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
               }`}
             >
@@ -153,7 +204,9 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
       {viewMode === "calendar" ? (
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Calendar */}
-          <div className="flex-shrink-0 bg-white rounded-lg shadow-md p-4">
+          <div className={`flex-shrink-0 rounded-lg shadow-md p-4 ${
+            theme === "dark" ? "bg-gray-800" : "bg-white"
+          }`}>
             <DayPicker
               mode="single"
               selected={selectedDate}
@@ -165,11 +218,18 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
               modifiersStyles={{
                 hasWorkout: {
                   fontWeight: "bold",
-                  backgroundColor: "#dbeafe",
+                  backgroundColor: theme === "dark" ? "#1e40af" : "#dbeafe",
                   borderRadius: "50%",
                 },
               }}
-              className="border rounded-lg p-3"
+              className={`border rounded-lg p-3 ${
+                theme === "dark" ? "text-white" : ""
+              }`}
+              styles={{
+                root: { color: theme === "dark" ? "#fff" : "#000" },
+                caption: { color: theme === "dark" ? "#fff" : "#000" },
+                head: { color: theme === "dark" ? "#9ca3af" : "#6b7280" },
+              }}
             />
             {selectedDate && (
               <button
@@ -184,7 +244,9 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
           {/* Workouts for selected date or all */}
           <div className="flex-1">
             {selectedDate && (
-              <h3 className="font-medium text-gray-900 mb-4">
+              <h3 className={`font-medium mb-4 ${
+                theme === "dark" ? "text-white" : "text-gray-900"
+              }`}>
                 Workouts on{" "}
                 {selectedDate.toLocaleDateString("en-US", {
                   month: "long",
@@ -194,8 +256,12 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
               </h3>
             )}
             {sortedWorkouts.length === 0 ? (
-              <div className="text-center py-12 text-gray-500 bg-white rounded-lg shadow-md">
-                <CheckCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+              <div className={`text-center py-12 rounded-lg shadow-md ${
+                theme === "dark" ? "bg-gray-800 text-gray-400" : "bg-white text-gray-500"
+              }`}>
+                <CheckCircle className={`w-16 h-16 mx-auto mb-4 ${
+                  theme === "dark" ? "text-gray-600" : "text-gray-300"
+                }`} />
                 <p>No workouts found.</p>
               </div>
             ) : (
@@ -203,7 +269,7 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
                 {sortedWorkouts.map((workout, index) => {
                   const originalIndex = completedWorkouts.findIndex(w => w === workout);
                   return (
-                    <WorkoutItem key={index} workout={workout} onDelete={() => onDeleteWorkout(originalIndex)} />
+                    <WorkoutItem key={index} workout={workout} onDelete={() => onDeleteWorkout(originalIndex)} theme={theme} />
                   );
                 })}
               </div>
@@ -214,8 +280,12 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
         // List View
         <>
           {sortedWorkouts.length === 0 ? (
-            <div className="text-center py-12 text-gray-500 bg-white rounded-lg shadow-md">
-              <CheckCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+            <div className={`text-center py-12 rounded-lg shadow-md ${
+              theme === "dark" ? "bg-gray-800 text-gray-400" : "bg-white text-gray-500"
+            }`}>
+              <CheckCircle className={`w-16 h-16 mx-auto mb-4 ${
+                theme === "dark" ? "text-gray-600" : "text-gray-300"
+              }`} />
               <p>No completed workouts yet.</p>
               <p className="text-sm mt-2">Start a workout to see it here!</p>
             </div>
@@ -224,7 +294,7 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
               {sortedWorkouts.map((workout, index) => {
                 const originalIndex = completedWorkouts.findIndex(w => w === workout);
                 return (
-                  <WorkoutItem key={index} workout={workout} onDelete={() => onDeleteWorkout(originalIndex)} />
+                  <WorkoutItem key={index} workout={workout} onDelete={() => onDeleteWorkout(originalIndex)} theme={theme} />
                 );
               })}
             </div>
@@ -235,25 +305,25 @@ export function HistoryView({ completedWorkouts, onDeleteWorkout }: HistoryViewP
   );
 }
 
-function WorkoutItem({ workout, onDelete }: { workout: CompletedWorkout; onDelete: () => void }) {
+function WorkoutItem({ workout, onDelete, theme = "light" }: { workout: CompletedWorkout; onDelete: () => void; theme?: "light" | "dark" }) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const getWorkoutStyle = () => {
     switch (workout.workoutType) {
       case "strength":
         return {
-          bgColor: "bg-purple-100",
-          icon: <Dumbbell className="w-5 h-5 text-purple-600" />,
+          bgColor: theme === "dark" ? "bg-purple-900/40" : "bg-purple-100",
+          icon: <Dumbbell className={`w-5 h-5 ${theme === "dark" ? "text-purple-400" : "text-purple-600"}`} />,
         };
       case "running":
         return {
-          bgColor: "bg-orange-100",
-          icon: <CircleDot className="w-5 h-5 text-orange-600" />,
+          bgColor: theme === "dark" ? "bg-orange-900/40" : "bg-orange-100",
+          icon: <CircleDot className={`w-5 h-5 ${theme === "dark" ? "text-orange-400" : "text-orange-600"}`} />,
         };
       case "cycling":
         return {
-          bgColor: "bg-green-100",
-          icon: <Bike className="w-5 h-5 text-green-600" />,
+          bgColor: theme === "dark" ? "bg-green-900/40" : "bg-green-100",
+          icon: <Bike className={`w-5 h-5 ${theme === "dark" ? "text-green-400" : "text-green-600"}`} />,
         };
     }
   };
@@ -261,11 +331,17 @@ function WorkoutItem({ workout, onDelete }: { workout: CompletedWorkout; onDelet
   const style = getWorkoutStyle();
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md relative">
+    <div className={`p-4 rounded-lg shadow-md relative ${
+      theme === "dark" ? "bg-gray-800" : "bg-white"
+    }`}>
       {/* Delete Button */}
       <button
         onClick={() => setShowDeleteConfirm(true)}
-        className="absolute top-4 right-4 p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+        className={`absolute top-4 right-4 p-2 rounded-lg transition-colors ${
+          theme === "dark"
+            ? "text-gray-400 hover:text-red-400 hover:bg-red-900/20"
+            : "text-gray-400 hover:text-red-600 hover:bg-red-50"
+        }`}
         title="Delete workout"
       >
         <Trash2 className="w-5 h-5" />
@@ -273,15 +349,23 @@ function WorkoutItem({ workout, onDelete }: { workout: CompletedWorkout; onDelet
 
       {/* Delete Confirmation */}
       {showDeleteConfirm && (
-        <div className="absolute inset-0 bg-white rounded-lg flex items-center justify-center p-4 z-10">
+        <div className={`absolute inset-0 rounded-lg flex items-center justify-center p-4 z-10 ${
+          theme === "dark" ? "bg-gray-800" : "bg-white"
+        }`}>
           <div className="text-center">
-            <p className="text-gray-900 font-medium mb-4">
+            <p className={`font-medium mb-4 ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}>
               Delete this workout?
             </p>
             <div className="flex gap-2 justify-center">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium"
+                className={`px-4 py-2 rounded-lg font-medium ${
+                  theme === "dark"
+                    ? "bg-gray-700 text-gray-200 hover:bg-gray-600"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
               >
                 Cancel
               </button>
@@ -305,8 +389,12 @@ function WorkoutItem({ workout, onDelete }: { workout: CompletedWorkout; onDelet
             {style.icon}
           </div>
           <div>
-            <h3 className="font-medium text-gray-900">{workout.workoutTitle}</h3>
-            <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+            <h3 className={`font-medium ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}>{workout.workoutTitle}</h3>
+            <div className={`flex items-center gap-1 text-sm mt-1 ${
+              theme === "dark" ? "text-gray-400" : "text-gray-500"
+            }`}>
               <Calendar className="w-4 h-4" />
               <span>
                 {new Date(workout.completedAt).toLocaleDateString("en-US", {
@@ -326,13 +414,17 @@ function WorkoutItem({ workout, onDelete }: { workout: CompletedWorkout; onDelet
       {/* Performance Rating */}
       {workout.performance?.rating && (
         <div className="flex items-center gap-1 mb-2">
-          <span className="text-sm text-gray-600">Rating:</span>
+          <span className={`text-sm ${
+            theme === "dark" ? "text-gray-300" : "text-gray-600"
+          }`}>Rating:</span>
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
               className={`w-4 h-4 ${
                 i < workout.performance!.rating!
                   ? "fill-yellow-400 text-yellow-400"
+                  : theme === "dark"
+                  ? "text-gray-600"
                   : "text-gray-300"
               }`}
             />
@@ -342,15 +434,21 @@ function WorkoutItem({ workout, onDelete }: { workout: CompletedWorkout; onDelet
 
       {/* Duration */}
       {workout.performance?.duration && (
-        <div className="text-sm text-gray-600 mb-2">
+        <div className={`text-sm mb-2 ${
+          theme === "dark" ? "text-gray-300" : "text-gray-600"
+        }`}>
           <span className="font-medium">Duration:</span> {workout.performance.duration}
         </div>
       )}
 
       {/* Notes */}
       {workout.notes && (
-        <div className="mt-2 p-3 bg-gray-50 rounded border border-gray-200">
-          <p className="text-sm text-gray-700">{workout.notes}</p>
+        <div className={`mt-2 p-3 rounded border ${
+          theme === "dark"
+            ? "bg-gray-700 border-gray-600 text-gray-200"
+            : "bg-gray-50 border-gray-200 text-gray-700"
+        }`}>
+          <p className="text-sm">{workout.notes}</p>
         </div>
       )}
     </div>
